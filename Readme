@@ -6,15 +6,20 @@ Hook callbacks are sent to python, and FLHook functions can be accessed as well
 (see the API documents below for a full list).
 
 Compiling doesn't require any 3rd party libraries (such as SWIG or Boost), but 
-does  require the python source code 2.7.* win32 version (ActiveState's ActivePython 
-is the recommended version). The cpp code shipped attempts to hook most callbacks, 
-for performace issues you should comment out the ones you don't plan on using in 
-scripts, or ones that are of little use and frequently called.
+does require the python source code 2.7.* win32 version (ActiveState's ActivePython 
+is the recommended version). python27.dll should also exist in your Freelancer\EXE
+directory, and python should be installed on your system so you have access to the
+default python libraries.
 
-This will require python to be installed on your server (2.7, win32 version)
+PyFL is suggested, as the plugin will call functions in the freelancer.embedded module.
+However, drop-in replacement modules for using this plugin without PyFL are included in
+the 'python-minimal-libraries' folder. Simply rename this folder to 'python' and place 
+it in your Freelancer\EXE\flhook_plugins directory.
 
-PyFL is also required, as the plugin will all functions in the freelancer.embedded module
 
+The cpp code shipped attempts to hook most callbacks, for performace issues you 
+should comment out the ones you don't plan on using in scripts, or ones that are 
+of little use and frequently called.
 
 
 ////////////////////////////////////////////////////////////////////////////////////

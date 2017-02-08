@@ -1,0 +1,3 @@
+This is the bare minimum python libraries needed to run the FLHook Python Plugin.
+It can be used as a drop in replacement for PyFL. Rename this folder to 'python'
+and place this in your Freelancer\EXE\flhook_plugins directory.
