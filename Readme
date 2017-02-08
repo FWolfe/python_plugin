@@ -1,0 +1,827 @@
+    FLHook Python Plugin
+    Fenris_Wolf, YSPStudios, TekagisTreasure Mod, 2016
+
+This is a plugin for FLHook 2.0 allowing for the use of python scripts. Hook callbacks are sent to python, 
+and FLHook functions can be accessed as well (see the API documents below for a full list).
+
+Compiling doesn't require any 3rd party libraries (such as SWIG or Boost), but does require the python source
+code 2.7.* win32 version (ActiveState's ActivePython is the recommended version). The cpp code shipped attempts 
+to hook most callbacks, for performace issues you should comment out the ones you don't plan on using in scripts, 
+or ones that are of little use and frequently called.
+
+This probably will require python to be installed on your server (all my machines have it so I can't test without),
+and defiantly will if you want your scripts to make use of external python libraries. 2 versions of the required python
+modules are included in this package: 
+1) a bare minimum needed to make the dll work
+2) a more feature rich set of modules allowing for easy python plugin scripting, allowing loading/unloading of scripts
+    (this one requires pythons blist module to be installed)
+these are located in the exe\flhook_plugins\ folder, if you wish to just use the minimal python code, delete the folder
+'python' and rename 'python-MINIMAL'
+Which ever one you choose to use, you should take a look through the python-MINIMAL\freelancer\embedded\__init__.py file
+first to familiarise yourself with the basics on exactly what C++ needs to exist in the code.
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+FLHook Module Functions:
+(Note: functions that normally return a HK_ERROR code return 'None' in python. If the result is anything other then HKE_OK,
+it will instead raise a FLHook.Error exception in python. Remember to 'try: .... except FLHook.Error: ....' when calling
+these functions)
+
+
+ConPrint(str text)
+
+namedtuple info = GetClientInfo(int client_id)
+
+PrintUserCmdText(int client_id, str text)
+
+
+// HkFuncMsg
+HkMsg(str charname, str text)
+
+HkMsgS(str systemname, str text)
+
+HkMsgU(str text)
+
+HkFMsg(str charname, str text)
+
+HkFMsgS(str systemname, str text)
+
+HkFMsgU(str text)
+
+
+// HkFuncLog
+AddLog(str text)\nPrints text to the FLHook log.
+
+// HkFuncOther
+str ip = HkGetPlayerIP(int client_id)
+
+HkSetAdmin(str charname, str rights)
+
+str rights = HkGetAdmin(str charname)
+
+HkDelAdmin(str charname)
+
+HkChangeNPCSpawn(bool disable)
+
+(float, float) = HkGetBaseStatus(str basename)
+
+// HkFuncPlayers
+int = HkGetCash(str charname)
+
+HkAddCash(str charname, int amount)
+
+HkKick(str charname)
+
+HkKickReason(str charname, str reason)
+
+HkBan(str charname, bool ban)
+
+HkBeam(str charname, str basename)
+
+HkSaveChar(str charname)
+
+HkEnumCargo(str charname)
+
+HkRemoveCargo(str charname, int id, int count)
+
+HkRemoveCargo(str charname, str good, int count, bool mission)
+
+HkBeam(str charname, str newname, bool delete_only)
+
+HkMsgAndKick(int client_id, str reason, int interval)
+
+HkKill(str charname)
+
+HkSetRep(str charname, str faction, float value)
+
+float rep = HkGetRep(str charname, str faction)
+
+// HkFuncTools
+int client_id = HkGetClientIdFromCharname(str charname)
+
+bool in_menu = HkIsInCharSelectMenu(int client_id)
+
+bool valid = HkIsValidClientID(int client_id)
+
+int client_id = HkGetClientIDByShip(int ship_id)
+
+str dirname = HkGetAccountDirName(str charname)
+
+str filename = HkGetCharFileName(str charname)
+
+str basename = HkGetBaseNickByID(int base_id)
+
+str systemname = HkGetSystemNickByID(int system_id)
+
+str systemname = HkGetPlayerSystem(int client_id)
+
+
+// Custom
+str charname = HkGetCharnameFromClientId(int client_id)
+
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CALLBACK STATUS:
+
+PLUGIN_ClearClientInfo (Supported)
+Python Name: ClearClientInfo
+Args:
+
+PLUGIN_LoadUserCharSettings (Supported)
+Python Name: LoadUserCharSettings
+Args: int (client_id)
+
+PLUGIN_HkCb_SendChat
+Python Name: HkCb_SendChat
+Args:
+
+PLUGIN_HkCB_MissileTorpHit
+Python Name: HkCB_MissileTorpHit
+Args:
+
+PLUGIN_HkCb_AddDmgEntry (Supported)
+Python Name: HkCb_AddDmgEntry
+Args:
+
+PLUGIN_HkCb_AddDmgEntry_AFTER (Supported)
+Python Name: HkCb_AddDmgEntry_AFTER
+Args:
+
+PLUGIN_HkCb_GeneralDmg (Not Supported)
+Python Name: HkCb_GeneralDmg
+Args:
+
+PLUGIN_AllowPlayerDamage (Supported)
+Python Name: AllowPlayerDamage
+Args:
+
+PLUGIN_SendDeathMsg (Supported)
+Python Name: SendDeathMsg
+Args:
+
+PLUGIN_ShipDestroyed (Supported)
+Python Name: ShipDestroyed
+Args:
+
+PLUGIN_BaseDestroyed (Supported)
+Python Name: BaseDestroyed
+Args:
+
+PLUGIN_HkIEngine_CShip_init (Not Supported)
+Python Name: HkIEngine_CShip_init
+Args:
+
+PLUGIN_HkIEngine_CShip_destroy
+Python Name: HkIEngine_CShip_destroy
+Args:
+
+PLUGIN_HkCb_Update_Time (Supported)
+Python Name: HkCb_Update_Time
+Args:
+
+PLUGIN_HkCb_Update_Time_AFTER (Supported)
+Python Name: HkCb_Update_Time_AFTER
+Args:
+
+PLUGIN_HkCb_Dock_Call
+Python Name: HkCb_Dock_Call
+Args:
+
+PLUGIN_HkCb_Dock_Call_AFTER
+Python Name: HkCb_Dock_Call_AFTER
+Args:
+
+PLUGIN_HkCb_Elapse_Time (Supported)
+Python Name:HkCb_Elapse_Time
+Args:
+
+PLUGIN_HkCb_Elapse_Time_AFTER (Supported)
+Python Name: HkCb_Elapse_Time_AFTER
+Args:
+
+PLUGIN_LaunchPosHook
+Python Name: LaunchPosHook
+Args:
+
+PLUGIN_HkTimerCheckKick (Supported)
+Python Name: HkTimerCheckKick
+Args:
+
+PLUGIN_HkTimerNPCAndF1Check (Supported)
+Python Name: HkTimerNPCAndF1Check
+Args:
+
+PLUGIN_UserCmd_Help (Supported But Disabled)
+Python Name: UserCmd_Help
+Args:
+
+PLUGIN_UserCmd_Process (Supported)
+Python Name: UserCmd_Process
+Args:
+
+PLUGIN_CmdHelp_Callback (Not Supported)
+Python Name: CmdHelp_Callback
+Args:
+
+PLUGIN_ExecuteCommandString_Callback
+Python Name: ExecuteCommandString_Callback
+Args:
+
+PLUGIN_ProcessEvent_BEFORE (Supported)
+Python Name: ProcessEvent_BEFORE
+Args:
+
+PLUGIN_LoadSettings (Supported)
+Python Name: LoadSettings
+Args:
+
+PLUGIN_Plugin_Communication (Not Supported)
+Python Name: Plugin_Communication_CallBack
+Args:
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+PLUGIN_HkIServerImpl_Update (Supported But Disabled)
+Python Name: HkIServerImpl_Update
+Args:
+
+PLUGIN_HkIServerImpl_SubmitChat (Supported)
+Python Name: HkIServerImpl_SubmitChat
+Args:
+
+PLUGIN_HkIServerImpl_SubmitChat_AFTER (Supported)
+Python Name: HkIServerImpl_SubmitChat_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_PlayerLaunch (Supported)
+Python Name: HkIServerImpl_PlayerLaunch
+Args:
+
+PLUGIN_HkIServerImpl_PlayerLaunch_AFTER (Supported)
+Python Name: HkIServerImpl_PlayerLaunch_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_FireWeapon (Supported)
+Python Name: HkIServerImpl_FireWeapon
+Args:
+
+PLUGIN_HkIServerImpl_FireWeapon_AFTER (Supported)
+Python Name: HkIServerImpl_FireWeapon_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPMunitionCollision (Supported)
+Python Name: HkIServerImpl_SPMunitionCollision
+Args:
+
+PLUGIN_HkIServerImpl_SPMunitionCollision_AFTER (Supported)
+Python Name: HkIServerImpl_SPMunitionCollision_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPObjUpdate (Supported)
+Python Name: HkIServerImpl_SPObjUpdate
+Args:
+
+PLUGIN_HkIServerImpl_SPObjUpdate_AFTER (Supported)
+Python Name: HkIServerImpl_SPObjUpdate_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPObjCollision (Supported)
+Python Name: HkIServerImpl_SPObjCollision
+Args:
+
+PLUGIN_HkIServerImpl_SPObjCollision_AFTER (Supported)
+Python Name: HkIServerImpl_SPObjCollision_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_LaunchComplete (Supported)
+Python Name: HkIServerImpl_LaunchComplete
+Args:
+
+PLUGIN_HkIServerImpl_LaunchComplete_AFTER (Supported)
+Python Name: HkIServerImpl_LaunchComplete_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_CharacterSelect (Supported)
+Python Name: HkIServerImpl_CharacterSelect
+Args:
+
+PLUGIN_HkIServerImpl_CharacterSelect_AFTER (Supported)
+Python Name: HkIServerImpl_CharacterSelect_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_BaseEnter (Supported)
+Python Name: HkIServerImpl_BaseEnter
+Args:
+
+PLUGIN_HkIServerImpl_BaseEnter_AFTER (Supported)
+Python Name: HkIServerImpl_BaseEnter_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_BaseExit (Supported)
+Python Name: HkIServerImpl_BaseExit
+Args:
+
+PLUGIN_HkIServerImpl_BaseExit_AFTER (Supported)
+Python Name: HkIServerImpl_BaseExit_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_OnConnect (Supported)
+Python Name: HkIServerImpl_OnConnect
+Args:
+
+PLUGIN_HkIServerImpl_OnConnect_AFTER (Supported)
+Python Name: HkIServerImpl_OnConnect_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_DisConnect (Supported)
+Python Name: HkIServerImpl_DisConnect
+Args:
+
+PLUGIN_HkIServerImpl_DisConnect_AFTER (Supported)
+Python Name: HkIServerImpl_DisConnect_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_TerminateTrade (Supported)
+Python Name: HkIServerImpl_TerminateTrade
+Args:
+
+PLUGIN_HkIServerImpl_TerminateTrade_AFTER (Supported)
+Python Name: HkIServerImpl_TerminateTrade_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_InitiateTrade (Supported)
+Python Name: HkIServerImpl_InitiateTrade
+Args:
+
+PLUGIN_HkIServerImpl_InitiateTrade_AFTER (Supported)
+Python Name: HkIServerImpl_InitiateTrade_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ActivateEquip (Supported)
+Python Name: HkIServerImpl_ActivateEquip
+Args:
+
+PLUGIN_HkIServerImpl_ActivateEquip_AFTER (Supported)
+Python Name: HkIServerImpl_ActivateEquip_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ActivateCruise (Supported)
+Python Name: HkIServerImpl_ActivateCruise
+Args:
+
+PLUGIN_HkIServerImpl_ActivateCruise_AFTER (Supported)
+Python Name: HkIServerImpl_ActivateCruise_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ActivateThrusters (Supported)
+Python Name: HkIServerImpl_ActivateThrusters
+Args:
+
+PLUGIN_HkIServerImpl_ActivateThrusters_AFTER (Supported)
+Python Name: HkIServerImpl_ActivateThrusters_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodSell (Supported)
+Python Name: HkIServerImpl_GFGoodSell
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodSell_AFTER (Supported)
+Python Name: HkIServerImpl_GFGoodSell_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_CharacterInfoReq (Supported)
+Python Name: HkIServerImpl_CharacterInfoReq
+Args:
+
+PLUGIN_HkIServerImpl_CharacterInfoReq_AFTER (Supported)
+Python Name: HkIServerImpl_CharacterInfoReq_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_JumpInComplete (Supported)
+Python Name: HkIServerImpl_JumpInComplete
+Args:
+
+PLUGIN_HkIServerImpl_JumpInComplete_AFTER (Supported)
+Python Name: HkIServerImpl_JumpInComplete_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SystemSwitchOutComplete (Supported)
+Python Name: HkIServerImpl_SystemSwitchOutComplete
+Args:
+
+PLUGIN_HkIServerImpl_SystemSwitchOutComplete_AFTER (Supported)
+Python Name: HkIServerImpl_SystemSwitchOutComplete_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_Login (Supported)
+Python Name: HkIServerImpl_Login
+Args:
+
+PLUGIN_HkIServerImpl_Login_AFTER (Supported)
+Python Name: HkIServerImpl_Login_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_MineAsteroid (Supported)
+Python Name: HkIServerImpl_MineAsteroid
+Args:
+
+PLUGIN_HkIServerImpl_MineAsteroid_AFTER (Supported)
+Python Name: HkIServerImpl_MineAsteroid_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_GoTradelane (Supported)
+Python Name: HkIServerImpl_GoTradelane
+Args:
+
+PLUGIN_HkIServerImpl_GoTradelane_AFTER (Supported)
+Python Name: HkIServerImpl_GoTradelane_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_StopTradelane (Supported)
+Python Name: HkIServerImpl_StopTradelane
+Args:
+
+PLUGIN_HkIServerImpl_StopTradelane_AFTER (Supported)
+Python Name: HkIServerImpl_StopTradelane_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_AbortMission (Supported)
+Python Name: HkIServerImpl_AbortMission
+Args:
+
+PLUGIN_HkIServerImpl_AbortMission_AFTER (Supported)
+Python Name: HkIServerImpl_AbortMission_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_AcceptTrade (Supported)
+Python Name: HkIServerImpl_AcceptTrade
+Args:
+
+PLUGIN_HkIServerImpl_AcceptTrade_AFTER (Supported)
+Python Name: HkIServerImpl_AcceptTrade_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_AddTradeEquip (Supported)
+Python Name: HkIServerImpl_AddTradeEquip
+Args:
+
+PLUGIN_HkIServerImpl_AddTradeEquip_AFTER (Supported)
+Python Name: HkIServerImpl_AddTradeEquip_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_BaseInfoRequest (Supported)
+Python Name: HkIServerImpl_BaseInfoRequest
+Args:
+
+PLUGIN_HkIServerImpl_BaseInfoRequest_AFTER (Supported)
+Python Name: HkIServerImpl_BaseInfoRequest_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_CreateNewCharacter (Supported)
+Python Name: HkIServerImpl_CreateNewCharacter
+Args:
+
+PLUGIN_HkIServerImpl_CreateNewCharacter_AFTER (Supported)
+Python Name: HkIServerImpl_CreateNewCharacter_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_DelTradeEquip (Supported)
+Python Name: HkIServerImpl_DelTradeEquip
+Args:
+
+PLUGIN_HkIServerImpl_DelTradeEquip_AFTER (Supported)
+Python Name: HkIServerImpl_DelTradeEquip_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_DestroyCharacter (Supported)
+Python Name: HkIServerImpl_DestroyCharacter
+Args:
+
+PLUGIN_HkIServerImpl_DestroyCharacter_AFTER (Supported)
+Python Name: HkIServerImpl_DestroyCharacter_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodBuy (Supported)
+Python Name: HkIServerImpl_GFGoodBuy
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodBuy_AFTER (Supported)
+Python Name: HkIServerImpl_GFGoodBuy_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodVaporized (Not Supported)
+Python Name: HkIServerImpl_GFGoodVaporized
+Args:
+
+PLUGIN_HkIServerImpl_GFGoodVaporized_AFTER (Not Supported)
+Python Name: HkIServerImpl_GFGoodVaporized_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_GFObjSelect (Supported)
+Python Name: HkIServerImpl_GFObjSelect
+Args:
+
+PLUGIN_HkIServerImpl_GFObjSelect_AFTER (Supported)
+Python Name: HkIServerImpl_GFObjSelect_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_Hail (Supported)
+Python Name: HkIServerImpl_Hail
+Args:
+
+PLUGIN_HkIServerImpl_Hail_AFTER (Supported)
+Python Name: HkIServerImpl_Hail_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_InterfaceItemUsed (Supported)
+Python Name: HkIServerImpl_InterfaceItemUsed
+Args:
+
+PLUGIN_HkIServerImpl_InterfaceItemUsed_AFTER (Supported)
+Python Name: HkIServerImpl_InterfaceItemUsed_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_JettisonCargo (Supported)
+Python Name: HkIServerImpl_JettisonCargo
+Args:
+
+PLUGIN_HkIServerImpl_JettisonCargo_AFTER (Supported)
+Python Name: HkIServerImpl_JettisonCargo_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_LocationEnter (Supported)
+Python Name: HkIServerImpl_LocationEnter
+Args:
+
+PLUGIN_HkIServerImpl_LocationEnter_AFTER (Supported)
+Python Name: HkIServerImpl_LocationEnter_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_LocationExit (Supported)
+Python Name: HkIServerImpl_LocationExit
+Args:
+
+PLUGIN_HkIServerImpl_LocationExit_AFTER (Supported)
+Python Name: HkIServerImpl_LocationExit_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_LocationInfoRequest (Supported)
+Python Name: HkIServerImpl_LocationInfoRequest
+Args:
+
+PLUGIN_HkIServerImpl_LocationInfoRequest_AFTER (Supported)
+Python Name: HkIServerImpl_LocationInfoRequest_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_MissionResponse (Supported)
+Python Name: HkIServerImpl_MissionResponse
+Args:
+
+PLUGIN_HkIServerImpl_MissionResponse_AFTER (Supported)
+Python Name: HkIServerImpl_MissionResponse_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqAddItem (Supported)
+Python Name: HkIServerImpl_ReqAddItem
+Args:
+
+PLUGIN_HkIServerImpl_ReqAddItem_AFTER (Supported)
+Python Name: HkIServerImpl_ReqAddItem_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqChangeCash (Supported)
+Python Name: HkIServerImpl_ReqChangeCash
+Args:
+
+PLUGIN_HkIServerImpl_ReqChangeCash_AFTER (Supported)
+Python Name: HkIServerImpl_ReqChangeCash_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqCollisionGroups (Not Supported)
+Python Name: HkIServerImpl_ReqCollisionGroups
+Args:
+
+PLUGIN_HkIServerImpl_ReqCollisionGroups_AFTER (Not Supported)
+Python Name: HkIServerImpl_ReqCollisionGroups_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqEquipment (Not Supported)
+Python Name: HkIServerImpl_ReqEquipment
+Args:
+
+PLUGIN_HkIServerImpl_ReqEquipment_AFTER (Not Supported)
+Python Name: HkIServerImpl_ReqEquipment_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqHullStatus (Supported)
+Python Name: HkIServerImpl_ReqHullStatus
+Args:
+
+PLUGIN_HkIServerImpl_ReqHullStatus_AFTER (Supported)
+Python Name: HkIServerImpl_ReqHullStatus_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqModifyItem (Supported)
+Python Name: HkIServerImpl_ReqModifyItem
+Args:
+
+PLUGIN_HkIServerImpl_ReqModifyItem_AFTER (Supported)
+Python Name: HkIServerImpl_ReqModifyItem_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqRemoveItem (Supported)
+Python Name: HkIServerImpl_ReqRemoveItem
+Args:
+
+PLUGIN_HkIServerImpl_ReqRemoveItem_AFTER (Supported)
+Python Name: HkIServerImpl_ReqRemoveItem_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqSetCash (Supported)
+Python Name: HkIServerImpl_ReqSetCash
+Args:
+
+PLUGIN_HkIServerImpl_ReqSetCash_AFTER (Supported)
+Python Name: HkIServerImpl_ReqSetCash_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_ReqShipArch (Supported)
+Python Name: HkIServerImpl_ReqShipArch
+Args:
+
+PLUGIN_HkIServerImpl_ReqShipArch_AFTER (Supported)
+Python Name: HkIServerImpl_ReqShipArch_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestBestPath (Supported)
+Python Name: HkIServerImpl_RequestBestPath
+Args:
+
+PLUGIN_HkIServerImpl_RequestBestPath_AFTER (Supported)
+Python Name: HkIServerImpl_RequestBestPath_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestCancel (Supported)
+Python Name: HkIServerImpl_RequestCancel
+Args:
+
+PLUGIN_HkIServerImpl_RequestCancel_AFTER (Supported)
+Python Name: HkIServerImpl_RequestCancel_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestCreateShip (Supported)
+Python Name: HkIServerImpl_RequestCreateShip
+Args:
+
+PLUGIN_HkIServerImpl_RequestCreateShip_AFTER (Supported)
+Python Name: HkIServerImpl_RequestCreateShip_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestEvent (Supported)
+Python Name: HkIServerImpl_RequestEvent
+Args:
+
+PLUGIN_HkIServerImpl_RequestEvent_AFTER (Supported)
+Python Name: HkIServerImpl_RequestEvent_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestGroupPositions (Supported)
+Python Name: HkIServerImpl_RequestGroupPositions
+Args:
+
+PLUGIN_HkIServerImpl_RequestGroupPositions_AFTER (Supported)
+Python Name: HkIServerImpl_RequestGroupPositions_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestPlayerStats (Supported)
+Python Name: HkIServerImpl_RequestPlayerStats
+Args:
+
+PLUGIN_HkIServerImpl_RequestPlayerStats_AFTER (Supported)
+Python Name: HkIServerImpl_RequestPlayerStats_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestRankLevel (Supported)
+Python Name: HkIServerImpl_RequestRankLevel
+Args:
+
+PLUGIN_HkIServerImpl_RequestRankLevel_AFTER (Supported)
+Python Name: HkIServerImpl_RequestRankLevel_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_RequestTrade (Supported)
+Python Name: HkIServerImpl_RequestTrade
+Args:
+
+PLUGIN_HkIServerImpl_RequestTrade_AFTER (Supported)
+Python Name: HkIServerImpl_RequestTrade_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPRequestInvincibility (Supported)
+Python Name: HkIServerImpl_SPRequestInvincibility
+Args:
+
+PLUGIN_HkIServerImpl_SPRequestInvincibility_AFTER (Supported)
+Python Name: HkIServerImpl_SPRequestInvincibility_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPRequestUseItem (Not Supported)
+Python Name: HkIServerImpl_SPRequestUseItem
+Args:
+
+PLUGIN_HkIServerImpl_SPRequestUseItem_AFTER (Not Supported)
+Python Name: HkIServerImpl_SPRequestUseItem_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SPScanCargo (Supported)
+Python Name: HkIServerImpl_SPScanCargo
+Args:
+
+PLUGIN_HkIServerImpl_SPScanCargo_AFTER (Supported)
+Python Name: HkIServerImpl_SPScanCargo_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetInterfaceState (Supported)
+Python Name: HkIServerImpl_SetInterfaceState
+Args:
+
+PLUGIN_HkIServerImpl_SetInterfaceState_AFTER (Supported)
+Python Name: HkIServerImpl_SetInterfaceState_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetManeuver (Supported)
+Python Name: HkIServerImpl_SetManeuver
+Args:
+
+PLUGIN_HkIServerImpl_SetManeuver_AFTER (Supported)
+Python Name: HkIServerImpl_SetManeuver_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetTarget (Supported)
+Python Name: HkIServerImpl_SetTarget
+Args:
+
+PLUGIN_HkIServerImpl_SetTarget_AFTER (Supported)
+Python Name: HkIServerImpl_SetTarget_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetTradeMoney (Supported)
+Python Name: HkIServerImpl_SetTradeMoney
+Args:
+
+PLUGIN_HkIServerImpl_SetTradeMoney_AFTER (Supported)
+Python Name: HkIServerImpl_SetTradeMoney_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetVisitedState (Supported)
+Python Name: HkIServerImpl_SetVisitedState
+Args:
+
+PLUGIN_HkIServerImpl_SetVisitedState_AFTER (Supported)
+Python Name: HkIServerImpl_SetVisitedState_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_SetWeaponGroup (Supported)
+Python Name: HkIServerImpl_SetWeaponGroup
+Args:
+
+PLUGIN_HkIServerImpl_SetWeaponGroup_AFTER (Supported)
+Python Name: HkIServerImpl_SetWeaponGroup_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_Shutdown (Supported)
+Python Name: HkIServerImpl_Shutdown
+Args:
+
+PLUGIN_HkIServerImpl_Startup (Supported)
+Python Name: HkIServerImpl_Startup
+Args:
+
+PLUGIN_HkIServerImpl_Startup_AFTER (Supported)
+Python Name: HkIServerImpl_Startup_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_StopTradeRequest (Supported)
+Python Name: HkIServerImpl_StopTradeRequest
+Args:
+
+PLUGIN_HkIServerImpl_StopTradeRequest_AFTER (Supported)
+Python Name: HkIServerImpl_StopTradeRequest_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_TractorObjects (Not Supported)
+Python Name: HkIServerImpl_TractorObjects
+Args:
+
+PLUGIN_HkIServerImpl_TractorObjects_AFTER (Not Supported)
+Python Name: HkIServerImpl_TractorObjects_AFTER
+Args:
+
+PLUGIN_HkIServerImpl_TradeResponse (Not Supported)
+Python Name: HkIServerImpl_TradeResponse
+Args:
+
+PLUGIN_HkIServerImpl_TradeResponse_AFTER (Not Supported)
+Python Name: HkIServerImpl_TradeResponse_AFTER
+Args:
+
