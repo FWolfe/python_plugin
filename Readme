@@ -1,32 +1,28 @@
-    FLHook Python Plugin
-    Fenris_Wolf, YSPStudios, TekagisTreasure Mod, 2016
+FLHook Python Plugin
+Fenris_Wolf, YSPStudios, TekagisTreasure Mod, 2016
 
-This is a plugin for FLHook 2.0 allowing for the use of python scripts. Hook callbacks are sent to python, 
-and FLHook functions can be accessed as well (see the API documents below for a full list).
+This is a plugin for FLHook 2.0 allowing for the use of python scripts. 
+Hook callbacks are sent to python, and FLHook functions can be accessed as well 
+(see the API documents below for a full list).
 
-Compiling doesn't require any 3rd party libraries (such as SWIG or Boost), but does require the python source
-code 2.7.* win32 version (ActiveState's ActivePython is the recommended version). The cpp code shipped attempts 
-to hook most callbacks, for performace issues you should comment out the ones you don't plan on using in scripts, 
-or ones that are of little use and frequently called.
+Compiling doesn't require any 3rd party libraries (such as SWIG or Boost), but 
+does  require the python source code 2.7.* win32 version (ActiveState's ActivePython 
+is the recommended version). The cpp code shipped attempts to hook most callbacks, 
+for performace issues you should comment out the ones you don't plan on using in 
+scripts, or ones that are of little use and frequently called.
 
-This probably will require python to be installed on your server (all my machines have it so I can't test without),
-and defiantly will if you want your scripts to make use of external python libraries. 2 versions of the required python
-modules are included in this package: 
-1) a bare minimum needed to make the dll work
-2) a more feature rich set of modules allowing for easy python plugin scripting, allowing loading/unloading of scripts
-    (this one requires pythons blist module to be installed)
-these are located in the exe\flhook_plugins\ folder, if you wish to just use the minimal python code, delete the folder
-'python' and rename 'python-MINIMAL'
-Which ever one you choose to use, you should take a look through the python-MINIMAL\freelancer\embedded\__init__.py file
-first to familiarise yourself with the basics on exactly what C++ needs to exist in the code.
+This will require python to be installed on your server (2.7, win32 version)
+
+PyFL is also required, as the plugin will all functions in the freelancer.embedded module
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 FLHook Module Functions:
-(Note: functions that normally return a HK_ERROR code return 'None' in python. If the result is anything other then HKE_OK,
-it will instead raise a FLHook.Error exception in python. Remember to 'try: .... except FLHook.Error: ....' when calling
-these functions)
+Note: functions that normally return a HK_ERROR code return 'None' in python. If the 
+result is anything other then HKE_OK, it will instead raise a FLHook.Error exception 
+in python. Remember to 'try: .... except FLHook.Error: ....' when calling these 
+functions.
 
 
 ConPrint(str text)
@@ -121,7 +117,7 @@ str systemname = HkGetPlayerSystem(int client_id)
 str charname = HkGetCharnameFromClientId(int client_id)
 
     
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 CALLBACK STATUS:
 
 PLUGIN_ClearClientInfo (Supported)
@@ -240,7 +236,7 @@ PLUGIN_Plugin_Communication (Not Supported)
 Python Name: Plugin_Communication_CallBack
 Args:
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_HkIServerImpl_Update (Supported But Disabled)
 Python Name: HkIServerImpl_Update
 Args:
